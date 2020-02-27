@@ -4,33 +4,24 @@ metadata:
   name: app-deploy
 spec:
   resources:
-    - name: api-repo
+    - name: nocode
       type: git
-    - name: api-image
+    - name: image
       type: image
-  params:
-    - name: pathToContext
-      description: The path to the build context, used by Kaniko - within the workspace
-      default: .
-    - name: imageUrl
-      description: Url of image repository
-    - name: imageTag
-      description: Tag to apply to the built image
   tasks:
-    - name: s2i
+    - name: buildah-run
       taskRef:
-        name: docker-to-image
-      params:
-        - name: pathToContext
-          value: "$(params.pathToContext)"
-        - name: imageUrl
-          value: "$(params.imageUrl)"
-        - name: imageTag
-          value: "$(params.imageTag)"
+        name: mybuildah
       resources:
         inputs:
-          - name: api-repo
-            resource: api-repo
+          - name: source
+            resource: nocode
+        outputs:
+          - name: image
+            resource: image
+      params:
+        - name: TLSVERIFY
+          value: "false"
 
     - name: apply-api-manifests
       taskRef:
@@ -38,9 +29,9 @@ spec:
       resources:
         inputs:
           - name: source
-            resource: api-repo
+            resource: nocode
       runAfter:
-        - s2i
+        - buildah-run
 
     - name: update-api-image
       taskRef:
@@ -48,7 +39,7 @@ spec:
       resources:
         inputs:
           - name: image
-            resource: api-image
+            resource: image
       params:
         - name: deployment
           value: "api"

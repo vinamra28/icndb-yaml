@@ -6,14 +6,9 @@ spec:
   pipelineRef:
     name: app-deploy
   resources:
-    - name: api-repo
+    - name: nocode
       resourceRef:
-        name: api-repo
-    - name: api-image
+        name: nocode
+    - name: image
       resourceRef:
-        name: api-image
-  params:
-    - name: imageUrl
-      value: image-registry.openshift-image-registry.svc:5000/icndb/api
-    - name: imageTag
-      value: "1.0"
+        name: image
