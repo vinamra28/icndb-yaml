@@ -43,5 +43,7 @@ spec:
       params:
         - name: deployment
           value: "icndb-server"
+        - name: app
+          value: "icndb-app"
       runAfter:
         - apply-api-manifests

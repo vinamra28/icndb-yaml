@@ -10,6 +10,8 @@ spec:
       - name: deployment
         description: The name of the deployment patch the image
         type: string
+      - name: app
+        type: string
 
   steps:
     - name: patch
@@ -17,7 +19,7 @@ spec:
       command: ["/bin/bash", "-c"]
       args:
         - |-
-          oc patch deployment $(inputs.params.deployment) --patch='{"spec":{"template":{"spec":{
+          oc patch deployment $(inputs.params.app) --patch='{"spec":{"template":{"spec":{
             "containers":[{
               "name": "$(inputs.params.deployment)",
               "image":"$(inputs.resources.image.url)"
