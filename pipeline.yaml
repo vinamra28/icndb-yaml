@@ -42,6 +42,6 @@ spec:
             resource: image
       params:
         - name: deployment
-          value: "api"
+          value: "icndb-server"
       runAfter:
         - apply-api-manifests
