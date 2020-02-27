@@ -19,4 +19,4 @@ spec:
   type: image
   params:
     - name: url
-      value: localhost:5000/nocode
+      value: image-registry.openshift-image-registry.svc:5000/icndb/api
