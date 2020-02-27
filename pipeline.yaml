@@ -1,0 +1,56 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: app-deploy
+spec:
+  resources:
+    - name: api-repo
+      type: git
+    - name: api-image
+      type: image
+  params:
+    - name: pathToContext
+      description: The path to the build context, used by Kaniko - within the workspace
+      default: .
+    - name: imageUrl
+      description: Url of image repository
+    - name: imageTag
+      description: Tag to apply to the built image
+  tasks:
+    - name: s2i
+      taskRef:
+        name: docker-to-image
+      params:
+        - name: pathToContext
+          value: "$(params.pathToContext)"
+        - name: imageUrl
+          value: "$(params.imageUrl)"
+        - name: imageTag
+          value: "$(params.imageTag)"
+      resources:
+        inputs:
+          - name: api-repo
+            resource: api-repo
+
+    - name: apply-api-manifests
+      taskRef:
+        name: apply-manifests
+      resources:
+        inputs:
+          - name: source
+            resource: api-repo
+      runAfter:
+        - s2i
+
+    - name: update-api-image
+      taskRef:
+        name: update-deployment
+      resources:
+        inputs:
+          - name: image
+            resource: api-image
+      params:
+        - name: deployment
+          value: "api"
+      runAfter:
+        - apply-api-manifests
