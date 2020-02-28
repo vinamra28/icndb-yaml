@@ -5,7 +5,7 @@ metadata:
 spec:
   inputs:
     resources:
-      - { type: git, name: source }
+      - { type: git, name: icndb-source }
     params:
       - name: manifest_dir
         description: The directory in source that contains yaml manifests
@@ -15,7 +15,7 @@ spec:
   steps:
     - name: apply
       image: quay.io/openshift/origin-cli:latest
-      workingDir: /workspace/source
+      workingDir: /workspace/icndb-source
       command: ["/bin/bash", "-c"]
       args:
         - |-

@@ -20,18 +20,18 @@ spec:
         default: "true"
 
     resources:
-      - name: source
+      - name: icndb-source
         type: git
 
   outputs:
     resources:
-      - name: image
+      - name: icndb-image
         type: image
 
   steps:
     - name: build
       image: $(inputs.params.BUILDER_IMAGE)
-      workingDir: /workspace/source
+      workingDir: /workspace/icndb-source
       command:
         [
           "buildah",
@@ -41,7 +41,7 @@ spec:
           "-f",
           "$(inputs.params.DOCKERFILE)",
           "-t",
-          "$(outputs.resources.image.url)",
+          "$(outputs.resources.icndb-image.url)",
           "$(inputs.params.CONTEXT)",
         ]
       volumeMounts:
@@ -52,13 +52,13 @@ spec:
 
     - name: push
       image: $(inputs.params.BUILDER_IMAGE)
-      workingDir: /workspace/source
+      workingDir: /workspace/icndb-source
       command:
         [
           "buildah",
           "push",
           "--tls-verify=$(inputs.params.TLSVERIFY)",
-          "$(outputs.resources.image.url)",
+          "$(outputs.resources.icndb-image.url)",
           "image-registry.openshift-image-registry.svc:5000/icndb/api",
         ]
       volumeMounts:

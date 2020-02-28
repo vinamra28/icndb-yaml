@@ -6,9 +6,9 @@ spec:
   pipelineRef:
     name: app-deploy
   resources:
-    - name: nocode
+    - name: icndb-source
       resourceRef:
-        name: nocode
-    - name: image
+        name: icndb-source
+    - name: icndb-image
       resourceRef:
-        name: image
+        name: icndb-image

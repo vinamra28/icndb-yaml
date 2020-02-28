@@ -4,9 +4,9 @@ metadata:
   name: app-deploy
 spec:
   resources:
-    - name: nocode
+    - name: icndb-source
       type: git
-    - name: image
+    - name: icndb-image
       type: image
   tasks:
     - name: buildah-run
@@ -14,11 +14,11 @@ spec:
         name: mybuildah
       resources:
         inputs:
-          - name: source
-            resource: nocode
+          - name: icndb-source
+            resource: icndb-source
         outputs:
-          - name: image
-            resource: image
+          - name: icndb-image
+            resource: icndb-image
       params:
         - name: TLSVERIFY
           value: "false"
@@ -28,8 +28,8 @@ spec:
         name: apply-manifests
       resources:
         inputs:
-          - name: source
-            resource: nocode
+          - name: icndb-source
+            resource: icndb-source
       runAfter:
         - buildah-run
 
@@ -39,11 +39,11 @@ spec:
       resources:
         inputs:
           - name: image
-            resource: image
+            resource: icndb-image
       params:
-        - name: deployment
+        - name: container-name
           value: "icndb-server"
-        - name: app
+        - name: deployment-name
           value: "icndb-app"
       runAfter:
         - apply-api-manifests

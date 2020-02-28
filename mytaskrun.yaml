@@ -8,14 +8,14 @@ spec:
     name: mybuildah
   outputs:
     resources:
-      - name: image
+      - name: icndb-image
         resourceRef:
-          name: image
+          name: icndb-image
   inputs:
     resources:
-      - name: source
+      - name: icndb-source
         resourceRef:
-          name: nocode
+          name: icndb-source
     params:
       - name: TLSVERIFY
         value: "false"
