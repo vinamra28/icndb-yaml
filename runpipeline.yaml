@@ -1,0 +1,14 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: icndb-run
+spec:
+  pipelineRef:
+    name: app-deploy-1
+  resources:
+    - name: icndb-source
+      resourceRef:
+        name: icndb-source
+    - name: icndb-image
+      resourceRef:
+        name: icndb-image

@@ -1,0 +1,37 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: apply-and-patch
+spec:
+  inputs:
+    resources:
+      - name: icndb-source
+        type: git
+      - name: icndb-image
+        type: image
+    params:
+      - name: container-name
+        description: The name of the deployment patch the image
+        type: string
+      - name: deployment-name
+        type: string
+      - name: manifest_dir
+        description: The directory in source that contains yaml manifests
+        type: string
+        default: "k8s"
+
+  steps:
+    - name: apply-and-patch
+      image: quay.io/openshift/origin-cli:latest
+      workingDir: /workspace/icndb-source
+      script: |
+        #!/usr/bin/env bash
+        echo Applying manifests in $(inputs.params.manifest_dir) directory
+        oc apply -f $(inputs.params.manifest_dir)
+        echo -----------------------------------
+        oc patch deployment $(inputs.params.deployment-name) --patch='{"spec":{"template":{"spec":{
+          "containers":[{
+            "name": "$(inputs.params.container-name)",
+            "image":"$(inputs.resources.icndb-image.url)"
+          }]
+        }}}}'

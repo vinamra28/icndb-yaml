@@ -1,0 +1,40 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: app-deploy-1
+spec:
+  resources:
+    - name: icndb-source
+      type: git
+    - name: icndb-image
+      type: image
+  tasks:
+    - name: buildah-run
+      taskRef:
+        name: mybuildah
+      resources:
+        inputs:
+          - name: icndb-source
+            resource: icndb-source
+        outputs:
+          - name: icndb-image
+            resource: icndb-image
+      params:
+        - name: TLSVERIFY
+          value: "false"
+    - name: apply-and-patch
+      taskRef:
+          name: apply-and-patch
+      resources:
+          inputs:
+          - name: icndb-source
+            resource: icndb-source
+          - name: icndb-image
+            resource: icndb-image
+      params:
+      - name: container-name
+        value: "icndb-server"
+      - name: deployment-name
+        value: "icndb-app"
+      runAfter:
+        - buildah-run
